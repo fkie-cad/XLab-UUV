@@ -1,0 +1,67 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "ccc" do |ccc|
+    ccc.vm.box = "bento/ubuntu-24.04"
+    ccc.vm.box_version = "202404.26.0"
+    ccc.vm.graceful_halt_timeout = 20
+
+    ccc.vm.hostname = "ccc"
+    ccc.vm.network "private_network", ip: "192.168.3.100", virtualbox__intnet: true, name: "intnet3"
+    ccc.vm.network "forwarded_port", guest: 22, host: 2003, auto_correct: true
+
+    ccc.vm.network "forwarded_port", host: 10116, host_ip: "127.0.0.1", guest: 10110, guest_ip: "192.168.3.100", auto_correct: false, protocol: "udp" # <- vm
+
+    ccc.vm.synced_folder ".", "/home/vagrant/ccc", type: "rsync", rsync__exclude: [".git/"]
+    ccc.vm.synced_folder "../utils/rov/", "/home/vagrant/rov", type: "rsync", rsync__exclude: [".git/"]
+    ccc.vm.synced_folder "../utils/opencpn/", "/home/vagrant/scripts", type: "rsync", rsync__exclude: [".git/"]
+
+    ccc.vm.post_up_message = <<-MESSAGE
+Access VM with X11 forwarding:
+`ssh -p 2003 -i ./.vagrant/machines/ccc/virtualbox/private_key -X vagrant@localhost`
+MESSAGE
+  end
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "CCC"
+    vb.memory = "2048"
+    vb.cpus = 2
+  end
+
+  if ARGV[0] == "up" && (ARGV[1] == "--provision" || ARGV[1] == "--provision-with")
+    config.vm.provider "virtualbox" do |vb|
+      vb.name = "CCC"
+      vb.memory = "4096"
+      vb.cpus = 4
+    end
+  end
+
+  config.ssh.forward_agent = true
+  config.ssh.forward_x11 = true
+
+  config.vm.provision "timezone", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/timezone.yml"
+  end
+
+  config.vm.provision "gui", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/gui.yml"
+  end
+
+  config.vm.provision "wireshark", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/wireshark.yml"
+  end
+
+  config.vm.provision "openCPN", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/opencpn.yml"
+  end
+
+  config.vm.provision "VLC", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/vlc.yml"
+  end
+
+  config.vm.provision "ccc", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/ccc.yml"
+  end
+end

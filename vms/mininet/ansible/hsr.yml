@@ -1,0 +1,9 @@
+- name: Install dependencies and tools for HSR
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install bridge utils
+      apt:
+        name:
+          - bridge-utils
+        state: present

@@ -1,0 +1,32 @@
+---
+- name: Build DDS component
+  hosts: all
+  become: yes
+  vars:
+    opendds_dir: /opt/opendds
+    dds_src: /opt/src/dds
+    dds_dir: /opt/dds
+    env_file: "{{ opendds_dir }}/OpenDDS-3.24.1/setenv.sh"
+  tasks:
+
+    - name: Apply freebsd patches 1/1
+      shell: cp "/home/vagrant/support/os_sem.h" "{{opendds_dir}}/OpenDDS-3.24.1/ACE_wrappers/ace/os_include/sys/os_sem.h"
+
+    - name: Build DDS
+      shell: |
+        source "{{ env_file }}"
+        cmake ../src
+        make -j 4
+      args:
+        chdir: "{{ dds_src }}/bin"
+        executable: /usr/local/bin/bash
+
+    - name: Copy dds to avoid overwriting the compiled binaries when mounting source directories
+      shell: |
+        if [ -d "{{ dds_dir }}" ]; then
+          rm -rf "{{ dds_dir }}"
+        fi
+        mkdir -p "{{ dds_dir }}"
+        cp "{{ dds_src }}/bin/bc-act-proxy" "{{ dds_dir }}/bc-act-proxy"
+        cp "{{ dds_src }}/bin/bc-sen-proxy" "{{ dds_dir }}/bc-sen-proxy"
+        cp "{{ dds_src }}/rtps.ini" "{{ dds_dir }}/rtps.ini"

@@ -1,0 +1,182 @@
+module Autopilot {
+  
+  struct Coordinates {
+    double latitude;
+    double longitude;
+  };
+
+  struct Waypoint {
+    Coordinates coords;
+    string name;
+  };
+
+  enum MissionItemActionType { 
+    MIAT_ACT_ROUTE,
+    MIAT_ACT_LP,
+    MIAT_ACT_DP,
+    MIAT_SET_AP_CMD
+  };
+
+  // WARNING: ccc-proxy relies on this enum matching the
+  //          MissionCommand enum in ccc/protos/xluuv_ccc/messages.proto 1:1,
+  //          the number of values and their order must be the same!
+  enum MissionCommandType { 
+    MC_START,
+    MC_STOP,
+    MC_SUSPEND,
+    MC_RESUME,
+    MC_SKIP_STEP
+  };
+
+  // WARNING: ccc-proxy relies on this enum matching the
+  //          MissionStatus enum in ccc/protos/xluuv_ccc/messages.proto 1:1,
+  //          the number of values and their order must be the same!
+  enum MissionStatus {
+    MS_UNKNOWN,
+    MS_ENABLED,
+    MS_DISABLED,
+    MS_SUSPENDED
+  };
+
+  // WARNING: ccc-proxy relies on this enum matching the
+  //          AutopilotState enum in ccc/protos/xluuv_ccc/messages.proto 1:1,
+  //          the number of values and their order must be the same!
+  enum AutopilotState {
+    AS_UNKNOWN,
+    AS_DISABLED,
+    AS_ROUTE_ENABLED,
+    AS_ROUTE_SUSPENDED,
+    AS_LOITERING,
+    AS_EMERGENCY_STOP,
+    AS_DIVING
+  };
+
+  // WARNING: ccc-proxy relies on this enum matching the
+  //          AutopilotCommand enum in ccc/protos/xluuv_ccc/messages.proto 1:1,
+  //          the number of values and their order must be the same!
+  enum AutopilotCommandType { 
+    AC_ROUTE_START,
+    AC_ROUTE_STOP,
+    AC_ROUTE_SUSPEND,
+    AC_ROUTE_RESUME,
+    AC_LOITER_START,
+    AC_LOITER_STOP,
+    AC_EMERGENCY_STOP,
+    AC_DIVE_START,
+    AC_DIVE_STOP
+  };
+
+  enum ProcedureType {
+    PROC_ROUTE,
+    PROC_DIVEPROCEDURE,
+    PROC_LOITERPOSITION
+  };
+
+  enum ColregType {
+    CR_INACTIVE,
+    CR_OVERTAKING,
+    CR_OVERTAKEN,
+    CR_HEAD_TO_HEAD,
+    CR_CROSSING
+  };
+
+  union MissionItemAction switch (MissionItemActionType) {
+    case MIAT_ACT_ROUTE:
+      long route_id;
+    case MIAT_ACT_LP:
+      long loiter_pos_id;
+    case MIAT_ACT_DP:
+      long dive_proc_id;
+    case MIAT_SET_AP_CMD:
+      AutopilotCommandType ap_cmd;
+  };
+
+  struct MissionItem {
+    boolean until_completion;
+    long timeout;
+    MissionItemAction action;
+  };
+
+  typedef sequence<MissionItem> MissionItemSeq;
+
+  typedef sequence<Waypoint> WaypointSeq;
+  
+  typedef unsigned long long TimestampT;
+
+  @topic
+  struct Route {
+    @key long id;
+    WaypointSeq waypoints;
+    string name;
+    double planned_speed;
+  };
+
+  @topic
+  struct DiveProcedure {
+    @key long id;
+    string name;
+    double depth;
+  };
+
+  @topic
+  struct LoiterPosition {
+    @key long id;
+    Waypoint position;
+    double bearing;
+  };
+
+  @topic
+  struct Mission {
+    @key long id;
+    string name;
+    MissionItemSeq mission_items;
+  };
+
+  @topic
+  struct ProcedureActivation {
+    @key ProcedureType procedure;
+    long procedure_id;
+  };
+
+  @topic
+  struct AutopilotCommand {
+    AutopilotCommandType command;
+  };
+
+  @topic
+  struct MissionCommand {
+    MissionCommandType command;
+  };
+
+  @topic
+  struct MissionReport {
+    string name;
+    MissionStatus status;
+    long progress;
+    long length;
+  };
+
+  @topic
+  struct APReport {
+    AutopilotState state;
+    Waypoint active_waypoint;
+    long active_route_id;
+    long route_progress;
+    long route_len;
+    string route_name;
+    long active_lp_id;
+    double lp_dist;
+    string lp_name;
+    string dp_name;
+    double tgt_depth;
+    double tgt_speed;
+    Coordinates gnss_ap;
+  };
+
+  @topic
+  struct ColregStatus {
+    ColregType type;
+    long tgt_mmsi;
+    Coordinates tgt_pos;
+  };
+};

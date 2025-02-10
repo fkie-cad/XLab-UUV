@@ -1,0 +1,22 @@
+---
+- name: Build smcRoute (static multicast routing daemon)
+  hosts: all
+  become: true
+  vars:
+    smcroute_dir: /opt/smcroute
+  tasks:
+    - name: Clone smcRoute repository
+      git:
+        repo: "https://github.com/troglobit/smcroute.git"
+        dest: "{{ smcroute_dir }}"
+
+    - name: Build autopilot
+      shell: |
+        ./autogen.sh
+        ./configure --prefix=/opt/smcroute --sysconfdir=/etc --localstatedir=/var
+        make
+        sudo make install
+      args:
+        chdir: "{{ smcroute_dir }}"
+        executable: /bin/bash
+

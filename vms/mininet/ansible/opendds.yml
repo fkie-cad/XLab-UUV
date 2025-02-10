@@ -1,0 +1,30 @@
+---
+- name: Download and install OpenDDS
+  hosts: all
+  become: true
+  vars:
+    opendds_dir: /opt/opendds
+    opendds_archive_url: "https://github.com/OpenDDS/OpenDDS/releases/download/DDS-3.24.1/OpenDDS-3.24.1.tar.gz"
+  tasks:
+    - name: Create OpenDDS directory
+      file:
+        path: "{{ opendds_dir }}"
+        state: directory
+
+    - name: Download OpenDDS archive
+      get_url:
+        url: "{{ opendds_archive_url }}"
+        dest: "{{ opendds_dir }}/OpenDDS-3.24.1.tar.gz"
+
+    - name: Unpack OpenDDS archive
+      shell: tar -xzf "{{ opendds_dir }}/OpenDDS-3.24.1.tar.gz" -C "{{ opendds_dir }}"
+
+    - name: Configure OpenDDS
+      shell: ./configure
+      args:
+        chdir: "{{ opendds_dir }}/OpenDDS-3.24.1"
+
+    - name: Build OpenDDS
+      shell: make -j $(nproc)
+      args:
+        chdir: "{{ opendds_dir }}/OpenDDS-3.24.1"

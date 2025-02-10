@@ -1,0 +1,45 @@
+---
+- name: Build DDS component
+  hosts: all
+  become: yes
+  vars:
+    opendds_dir: /opt/opendds
+    dds_src: /opt/src/dds
+    dds_dir: /opt/dds
+    env_file: "{{ opendds_dir }}/OpenDDS-3.24.1/setenv.sh"
+  tasks:
+    - name: Install build dependencies
+      apt:
+        name:
+          - cmake
+          - clang
+          - libboost-all-dev
+          - libasio-dev
+          - libboost-serialization-dev
+          - build-essential
+          - autoconf
+          - libtool
+          - pkg-config
+          - libcurl4-gnutls-dev
+        state: present
+
+    - name: Build DDS
+      shell: |
+        source "{{ env_file }}"
+        cmake ../src -DPULL_GRPC=True
+        make -j $(nproc)
+      args:
+        chdir: "{{ dds_src }}/bin"
+        executable: /bin/bash
+
+    - name: Copy dds to avoid overwriting the compiled binaries when mounting source directories
+      shell: |
+        if [ -d "{{ dds_dir }}" ]; then
+          rm -rf "{{ dds_dir }}"
+        fi
+        mkdir -p "{{ dds_dir }}"
+        cp "{{ dds_src }}/bin/bc-act-proxy" "{{ dds_dir }}/bc-act-proxy"
+        cp "{{ dds_src }}/bin/bc-sen-proxy" "{{ dds_dir }}/bc-sen-proxy"
+        cp "{{ dds_src }}/bin/autopilot" "{{ dds_dir }}/autopilot"
+        cp "{{ dds_src }}/bin/ccc-proxy" "{{ dds_dir }}/ccc-proxy"
+        cp "{{ dds_src }}/rtps.ini" "{{ dds_dir }}/rtps.ini"

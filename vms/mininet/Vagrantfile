@@ -1,0 +1,88 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "mininet" do |mn|
+    mn.vm.box = "bento/ubuntu-24.04"
+    mn.vm.box_version = "202404.26.0"
+    mn.disksize.size = '20GB'
+    mn.vm.graceful_halt_timeout = 20
+
+    mn.vm.hostname = "mininet"
+    mn.vm.network "private_network", ip: "192.168.1.1", virtualbox__intnet: true, name: "xluuvvpn" # VPN 
+    mn.vm.network "private_network", ip: "192.168.3.1", virtualbox__intnet: true, name: "intnet3" # CCC
+    mn.vm.network "forwarded_port", guest: 22, host: 2001, auto_correct: true
+
+    mn.vm.synced_folder ".", "/home/vagrant/network", type: "rsync", rsync__exclude: [".git/"]
+    mn.vm.synced_folder "../utils/dds/", "/opt/src/dds", type: "rsync", rsync__exclude: [".git/", "**/bin/*", "**/CMakeCache.txt"]
+    mn.vm.synced_folder "../utils/rov/", "/opt/src/rov", type: "rsync", rsync__exclude: [".git/"]
+    mn.vm.synced_folder "./scripts", "/home/vagrant/scripts", type: "rsync", rsync__exclude: [".git/"]
+    mn.vm.synced_folder "../utils/vpn/", "/home/vagrant/vpn", type: "rsync"
+
+    mn.vm.post_up_message = <<-MESSAGE
+Access VM with X11 forwarding:
+`ssh -p 2001 -i ./.vagrant/machines/mininet/virtualbox/private_key -X vagrant@localhost`
+MESSAGE
+  end
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "Mininet"
+    vb.memory = "2048"
+    vb.cpus = 2
+  end
+
+  if ARGV[0] == "up" && (ARGV[1] == "--provision" || ARGV[1] == "--provision-with")
+    config.vm.provider "virtualbox" do |vb|
+      vb.name = "Mininet"
+      vb.memory = "4096"
+      vb.cpus = 4
+    end
+  end
+
+  config.ssh.forward_agent = true
+  config.ssh.forward_x11 = true
+
+  config.vm.provision "timezone", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/timezone.yml"
+  end
+  config.vm.provision "resizefs", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/resizefs.yml"
+  end
+
+  config.vm.provision "gui", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/gui.yml"
+  end
+
+  config.vm.provision "wireshark", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/wireshark.yml"
+  end
+
+  config.vm.provision "mininet", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/mininet.yml"
+  end
+
+  config.vm.provision "opendds", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/opendds.yml"
+  end
+
+  config.vm.provision "dds", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/dds.yml"
+  end
+
+  config.vm.provision "smcroute", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/smcroute.yml"
+  end
+
+  config.vm.provision "vlc", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/vlc.yml"
+  end
+
+  config.vm.provision "hsr", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/hsr.yml"
+  end
+
+  config.vm.provision "shell", run: "always" do |sh|
+    sh.inline = "sudo pip3 install --break-system-packages -e /home/vagrant/network"
+  end
+end

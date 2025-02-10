@@ -1,0 +1,82 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "BridgeCommand"
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]
+    vb.customize ['modifyvm', :id, '--vram', '128']
+    vb.customize ["modifyvm", :id, "--acpi", "on"]
+    vb.customize ["modifyvm", :id, "--hpet", "on"]
+    vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+  end
+
+  config.vm.define "bridgecommand" do |bc|
+    bc.vm.box = "bento/ubuntu-24.04"
+    bc.vm.box_version = "202404.26.0"
+    bc.vm.graceful_halt_timeout = 20
+    bc.disksize.size = '20GB'
+
+    bc.vm.hostname = "bridgecommand"
+    bc.vm.network "forwarded_port", id: "ssh", guest: 22, host: 2002, auto_correct: true
+    bc.vm.network "private_network", ip: "192.178.1.2", virtualbox__intnet: true, name: "extnet1" # towards tc/bsd
+
+    bc.vm.network "forwarded_port", guest: 10112, guest_ip: "192.178.1.2", host: 10112, host_ip: "127.0.0.1", auto_correct: false, protocol: "udp" # -> vm
+    bc.vm.network "forwarded_port", host: 10115, host_ip: "127.0.0.1", guest: 10113, guest_ip: "192.178.1.2", auto_correct: false, protocol: "udp" # <- vm
+    bc.vm.network "forwarded_port", guest: 10114, guest_ip: "192.178.1.2", host: 10114, host_ip: "127.0.0.1", auto_correct: false, protocol: "udp" # -> vm
+
+
+    # Avoid compiled binaries being overwritten
+    bc.vm.synced_folder '.', '/vagrant', disabled: true
+    bc.vm.synced_folder "./bc", "/home/vagrant/bc/", type: "rsync", rsync__args: ["--verbose", "--archive", "-z"], rsync__exclude: [".git/", "**/CMakeCache.txt"]
+    bc.vm.synced_folder "./scripts", "/home/vagrant/scripts/", type: "rsync", rsync__args: ["--verbose", "--archive", "-z"]
+
+    bc.vm.post_up_message = <<-MESSAGE
+Access VM with X11 forwarding:
+`ssh -p 2002 -i ./.vagrant/machines/bridgecommand/virtualbox/private_key -X vagrant@localhost`
+
+To start BC: `cd` into `~/bc/bin/` and run `./bridgecommand`
+MESSAGE
+  end
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "BridgeCommand"
+    vb.memory = "2048"
+    vb.cpus = 2
+  end
+
+  if ARGV[0] == "up" && (ARGV[1] == "--provision" || ARGV[1] == "--provision-with")
+    config.vm.provider "virtualbox" do |vb|
+      vb.name = "BridgeCommand"
+      vb.memory = "4096"
+      vb.cpus = 4
+    end
+  end
+
+  config.ssh.forward_agent = true
+  config.ssh.forward_x11 = true
+
+  config.vm.provision "timezone", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/timezone.yml"
+  end
+  
+  config.vm.provision "resizefs", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/resizefs.yml"
+  end
+
+  config.vm.provision "gui", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/gui.yml"
+  end
+
+  config.vm.provision "wireshark", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/wireshark.yml"
+  end
+
+  config.vm.provision "bcdependencies", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/bcdependencies.yml"
+  end
+
+  config.vm.provision "bcbuild", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/bcbuild.yml"
+  end
+end

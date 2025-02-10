@@ -1,0 +1,33 @@
+---
+- name: Install BC dependencies and reboot if required
+  hosts: bridgecommand
+  become: true
+  tasks:
+
+    - name: Install dependencies
+      ansible.builtin.apt:
+        pkg:
+          - cmake
+          - mesa-common-dev
+          - libxxf86vm-dev
+          - freeglut3-dev
+          - libxext-dev
+          - libxcursor-dev
+          - portaudio19-dev
+          - libsndfile1-dev
+
+    - name: Check if reboot required
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+
+    - name: Install new boost version
+      ansible.builtin.shell:
+        cmd: |
+          add-apt-repository ppa:mhier/libboost-latest -y
+          apt update
+          apt install -y libboost-serialization1.83-dev
+
+    - name: Reboot if required
+      ansible.builtin.reboot:
+      when: reboot_required_file.stat.exists == true

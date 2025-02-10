@@ -1,0 +1,56 @@
+- name: Install mininet, MRP and other dependencies
+  hosts: all
+  become: true
+  become_method: sudo
+  tasks:
+    - name: Install openvpn
+      apt: name=openvpn state=latest
+
+    - name: Install mininet
+      apt: name=mininet state=latest
+
+    - name: Remove old gits
+      shell: |
+        rm -rf /opt/mininet
+        rm -rf /opt/openflow
+
+    - name: Clone mininet repository
+      git:
+        repo: 'https://github.com/mininet/mininet'
+        dest: '/opt/mininet'
+
+    - name: Install openVswitch
+      apt: name=openvswitch-switch state=latest
+
+    - name: Enable and start openVswitch service
+      shell: |
+        service openvswitch-switch enable
+        service openvswitch-switch start
+
+    - name: Download openflow
+      shell: git clone https://github.com/mininet/openflow
+      args:
+        chdir: /opt
+
+    - name: Patch mininet
+      shell: patch < /home/vagrant/network/mininet.patch
+      args:
+        chdir: /opt/mininet/util
+
+    - name: Patch openflow
+      shell: git apply /home/vagrant/network/openflow.patch
+      args:
+        chdir: /opt/openflow
+
+    - name: Install additional software for mininet
+      shell: /opt/mininet/util/install.sh -fw
+      args:
+        chdir: /opt
+    
+    - name: Install xterm for mininet
+      apt: name=xterm state=latest
+
+    - name: Install python3-pip
+      apt: name=python3-pip state=latest
+
+

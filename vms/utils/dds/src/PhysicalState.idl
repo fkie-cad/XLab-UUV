@@ -1,0 +1,75 @@
+module PhysicalState {
+
+  enum NavigationStatus {
+    UNDERWAY_ENGINE,
+    AT_ANCHOR,
+    NOT_UNDER_COMMAND,
+    RESTRICTED_MANOEUVERABILITY,
+    CONSTRAINED_BY_DRAUGHT,
+    MOORED,
+    AGROUND,
+    ENGAGED_IN_FISHING,
+    UNDERWAY_SAILING,
+    RESERVED_FOR_FUTURE_1,
+    RESERVED_FOR_FUTURE_2,
+    RESERVED_FOR_FUTURE_3,
+    RESERVED_FOR_FUTURE_4,
+    RESERVED_FOR_FUTURE_5,
+    AIS_SART_ACTIVE,
+    NOT_DEFINED
+  };
+
+  struct Coordinates {
+    double latitude;
+    double longitude;
+  };
+
+  @topic
+  struct Sensors {
+    @key long bc_id;
+    double course_over_ground;
+    Coordinates gnss_1;
+    Coordinates gnss_2;
+    Coordinates gnss_3;
+    double heading;
+    double rate_of_turn;
+    double rpm_port;
+    double rpm_stbd;
+    double rudder_angle;
+    double speed;
+    double speed_over_ground;
+    double throttle_port;
+    double throttle_stbd;
+    double depth_under_keel;
+    double ship_depth;
+    double buoyancy;
+  };
+
+  @topic
+  struct Actuators {
+    @key long bc_id;
+    double rudder_angle;
+    double engine_throttle_port;
+    double engine_throttle_stbd;
+    double thruster_throttle_bow;
+    double thruster_throttle_stern;
+    double ballast_tank_pump;
+  };
+
+  // message is the NMEA string with AIS payload
+  // all other fields are with values taken directly from BC
+  // *without* any AIS-encoding loss of precision
+  @topic
+  struct AivdmMessage {
+    string message;
+    long message_type;
+    long mmsi;
+    NavigationStatus navigation_status;
+    double latitude;
+    double longitude;
+    double rate_of_turn;
+    double speed_over_ground;
+    double course_over_ground;
+    double true_heading;
+  };
+};

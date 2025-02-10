@@ -1,0 +1,144 @@
+{
+  "procedures": {
+    "routes": [
+      {
+        "id": 101,
+        "path": "./routes/SantaCatalina_01.gpx"
+      },
+      {
+        "id": 104,
+        "path": "./routes/SantaCatalina_04.gpx"
+      }
+    ],
+    "dive_procedures": [
+      {
+        "id": 103,
+        "path": "./dive_procedures/SantaCatalina_03.json"
+      },
+      {
+        "id": 106,
+        "path": "./dive_procedures/SantaCatalina_06.json"
+      },
+      {
+        "id": 111,
+        "path": "./dive_procedures/surface.json"
+      }
+    ],
+    "loiter_positions": [
+      {
+        "id": 102,
+        "path": "./loiter_positions/SantaCatalina_02.json"
+      },
+      {
+        "id": 105,
+        "path": "./loiter_positions/SantaCatalina_05.json"
+      },
+      {
+        "id": 107,
+        "path": "./loiter_positions/SantaCatalina_07.json"
+      }
+    ]
+  },
+  "mission": {
+    "id": 1,
+    "name": "Diving in Santa Catalina",
+    "items": [
+      {
+        "until_completion": false,
+        "activate_diveproc": 111
+      },
+      {
+        "until_completion": false,
+        "set_ap_cmd": "AC_DIVE_START"
+      },
+      {
+        "until_completion": true,
+        "activate_route": 101
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_loiterpos": 102
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_STOP"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_diveproc": 103
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_DIVE_START"
+      },
+      {
+        "until_completion": true,
+        "activate_route": 104
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_loiterpos": 105
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_STOP"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_diveproc": 106
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_DIVE_START"
+      },
+      {
+        "until_completion": true,
+        "activate_loiterpos": 107
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_STOP"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      }
+    ]
+  }
+}

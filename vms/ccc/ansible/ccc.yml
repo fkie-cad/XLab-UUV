@@ -1,0 +1,65 @@
+---
+- name: Install and configure CCC
+  hosts: all
+  vars:
+    ccc_dir: "/home/vagrant/ccc"
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      become: yes
+
+    - name: Install Python3-pip
+      apt:
+        name: python3-pip
+        state: present
+      become: yes
+
+    - name: Install xsel for GUI
+      apt:
+        name: xsel
+        state: present
+      become: yes
+
+    - name: Install Python3-poetry
+      apt:
+        name: python3-poetry
+        state: present
+      become: yes
+
+    - name: Install CCC dependencies
+      shell: "poetry install"
+      args:
+        chdir: "{{ ccc_dir }}"
+        executable: /bin/bash
+
+    - name: Generate Python code from proto files
+      shell: "poetry run python3 -m grpc_tools.protoc -Iproto/ --python_out=. --grpc_python_out=. --pyi_out=. proto/xluuv_ccc/messages.proto"
+      args:
+        chdir: "{{ ccc_dir }}"
+        executable: /bin/bash
+
+    - name: Build CCC package
+      shell: "poetry build"
+      args:
+        chdir: "{{ ccc_dir }}"
+        executable: /bin/bash
+
+    - name: Install expect package for authentication
+      apt:
+        name: expect
+        state: present
+      become: yes
+
+    - name: Install CCC package with expect workaround for authentication
+      shell: "python3 -m pip install --break-system-packages ."
+      args:
+        chdir: "{{ ccc_dir }}"
+        executable: /bin/bash
+
+    - name: Compile Missions
+      shell: "./create_zips.py"
+      args:
+        chdir: "{{ ccc_dir }}/examples"
+        executable: /bin/bash

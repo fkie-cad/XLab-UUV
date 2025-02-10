@@ -1,0 +1,56 @@
+[tool.poetry]
+name = "xluuv-ccc"
+version = "0.1.0"
+description = "Command and Control Container component of the XLUUV test environment"
+authors = ["CAD Maritime <cad-maritime@fkie.fraunhofer.de>"]
+readme = "README.md"
+packages = [{include = "xluuv_ccc"}]
+include = ["./xluuv_ccc/messages*.py*"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Kivy = "^2.2.0"
+grpcio = "^1.54.2"
+protobuf = "^4.23.3"
+ffpyplayer = "^4.5.1"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+isort = "^5.12.0"
+black = "^23.3.0"
+pytest = "^7.3.1"
+grpcio-tools = "^1.54.2"
+
+[tool.poetry.scripts]
+ccc-cli = "xluuv_ccc.client.cli:main"
+ccc-gui = "xluuv_ccc.client.gui:main"
+ccc-server = "xluuv_ccc.server.server:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+target-version = ['py310']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | venv
+    | _build
+    | buck-out
+    | build
+    | builds
+    | dist
+    | __pycache__
+    | misc
+  )/
+)
+'''

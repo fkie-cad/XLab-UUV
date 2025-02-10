@@ -1,0 +1,679 @@
+<CccTab>:
+    do_default_tab: False
+    st_ping_label: ping_label
+    st_mission_name: st_mission_name
+    st_mission_stats: st_mission_stats
+    st_ms_status: st_ms_status
+    st_ap_status: st_ap_status
+    st_route_name: st_route_name
+    st_route_stats: st_route_stats
+    st_route_progress: st_route_progress
+    st_wpt_dist: st_wpt_dist
+    st_lp_name: st_lp_name
+    st_lp_stats: st_lp_stats
+    st_dp_name: st_dp_name
+    st_dp_stats: st_dp_stats
+    st_gnss_ap: st_gnss_ap
+    st_gnss_1: st_gnss_1
+    st_gnss_2: st_gnss_2
+    st_gnss_3: st_gnss_3
+    st_cog: st_cog
+    st_heading: st_heading
+    st_sen_rudder: st_sen_rudder
+    st_rot: st_rot
+    st_sog: st_sog
+    st_speed: st_speed
+    st_ship_depth: st_ship_depth
+    st_depth_under_keel: st_depth_under_keel
+    st_rpm_port: st_rpm_port
+    st_rpm_stbd: st_rpm_stbd
+    st_act_rudder: st_act_rudder
+    st_act_ballast_pump: st_act_ballast_pump
+    st_act_engine_throttle_port: st_act_engine_throttle_port
+    st_act_engine_throttle_stbd: st_act_engine_throttle_stbd
+    st_thruster_throttle_bow: st_thruster_throttle_bow
+    st_thruster_throttle_stern: st_thruster_throttle_stern
+    alert_container: alert_container
+    st_rov_video: st_rov_video
+
+
+    TabbedPanelItem:
+        text: "Status"
+        FloatLayout:
+            BoxLayout:
+                orientation: "vertical"
+                BoxLayout:
+                    orientation: "horizontal"
+                    height: 30
+                    size_hint: 1, None
+                    PaddedLabelL:
+                        text: "Last ping:"
+                    PaddedLabelR:
+                        id: ping_label
+                        text: "N/A"
+                TitleLabel:
+                    text: "Mission Status"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        text: "State:"
+                    PaddedLabelR:
+                        id: st_ms_status
+                        text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        id: st_mission_name
+                        text: "Mission N/A"
+                    PaddedLabelR:
+                        id: st_mission_stats
+                        text: "Progress N/A"
+                TitleLabel:
+                    text: "Autopilot Status"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        text: "State:"
+                    PaddedLabelR:
+                        id: st_ap_status
+                        text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        id: st_route_name
+                        text: "Route N/A"
+                    PaddedLabelR:
+                        id: st_route_stats
+                        text: "Tgt. Speed N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        id: st_route_progress
+                        text: "Progress N/A"
+                    PaddedLabelR:
+                        id: st_wpt_dist
+                        text: "Distance N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        id: st_lp_name
+                        text: "Loiter Pos. N/A"
+                    PaddedLabelR:
+                        id: st_lp_stats
+                        text: "Distance N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        id: st_dp_name
+                        text: "Dive Proc. N/A"
+                    PaddedLabelR:
+                        id: st_dp_stats
+                        text: "Distance N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        text_size: self.size
+                        text: "GNSS AP:"
+                    PaddedLabelR:
+                        id: st_gnss_ap
+                        text: "N/A"
+                TitleLabel:
+                    text: "Sensor Values"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        text_size: self.size
+                        text: "GNSS 1:"
+                    PaddedLabelR:
+                        id: st_gnss_1
+                        text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        text_size: self.size
+                        text: "GNSS 2:"
+                    PaddedLabelR:
+                        id: st_gnss_2
+                        text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        text_size: self.size
+                        text: "GNSS 3:"
+                    PaddedLabelR:
+                        id: st_gnss_3
+                        text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "COG:"
+                        PaddedLabelR:
+                            id: st_cog
+                            text: "N/A"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "Heading:"
+                        PaddedLabelR:
+                            id: st_heading
+                            text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "Rudder:"
+                        PaddedLabelR:
+                            id: st_sen_rudder
+                            text: "N/A"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "ROT:"
+                        PaddedLabelR:
+                            id: st_rot
+                            text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "SOG:"
+                        PaddedLabelR:
+                            id: st_sog
+                            text: "N/A"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "Speed:"
+                        PaddedLabelR:
+                            id: st_speed
+                            text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "Dpt u. Keel"
+                        PaddedLabelR:
+                            id: st_depth_under_keel
+                            text: "N/A"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "Vessel Dpt"
+                        PaddedLabelR:
+                            id: st_ship_depth
+                            text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "RPM Port:"
+                        PaddedLabelR:
+                            id: st_rpm_port
+                            text: "N/A"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "RPM Stbd:"
+                        PaddedLabelR:
+                            id: st_rpm_stbd
+                            text: "N/A"
+                TitleLabel:
+                    text: "Actuator Commands"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        text_size: self.size
+                        text: "Wheel:"
+                    PaddedLabelR:
+                        id: st_act_rudder
+                        text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    PaddedLabelL:
+                        text_size: self.size
+                        text: "Ballast Tank Pump:"
+                    PaddedLabelR:
+                        id: st_act_ballast_pump
+                        text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "ENG Port:"
+                        PaddedLabelR:
+                            id: st_act_engine_throttle_port
+                            text: "N/A"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "ENG Stbd:"
+                        PaddedLabelR:
+                            id: st_act_engine_throttle_stbd
+                            text: "N/A"
+                BoxLayout:
+                    orientation: "horizontal"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "THR Bow:"
+                        PaddedLabelR:
+                            id: st_thruster_throttle_bow
+                            text: "N/A"
+                    BoxLayout:
+                        orientation: "horizontal"
+                        PaddedLabelL:
+                            text_size: self.size
+                            text: "THR Stern:"
+                        PaddedLabelR:
+                            id: st_thruster_throttle_stern
+                            text: "N/A"
+                            size: self.size
+            Button:
+                id: alert_container
+                background_color: 0.96, 0.0, 0.1, 1
+                background_normal: ""
+                visible: False
+                size_hint_x: 1 if self.visible else 0
+                size_hint_y: 0.05
+                position_hint_y: 0.1
+                opacity: 1 if self.visible else 0
+                disabled: not self.visible
+                text: "Override Me!"
+                on_press: app.dismiss_alert_popup()
+
+    TabbedPanelItem:
+        text: "AP Cmds"
+        BoxLayout:
+            orientation: "vertical"
+            TitleLabel:
+                text: "Mission Controls"
+            BoxLayout:
+                orientation: "horizontal"
+                id: ap_mission_control_container
+                UnicodeButton:
+                    text: "↷ Skip"
+                    on_release: app.send_command("ms_skip")
+                UnicodeButton:
+                    text: "▶ Start"
+                    on_release: app.send_command("ms_start")
+                UnicodeButton:
+                    text: "■ Stop"
+                    on_release: app.send_command("ms_stop")
+                UnicodeButton:
+                    text: "▷ Res."
+                    on_release: app.send_command("ms_resume")
+                UnicodeButton:
+                    text: "▯▯ Susp."
+                    on_release: app.send_command("ms_suspend")
+            TitleLabel:
+                text: "Autopilot Controls"
+            BoxLayout:
+                orientation: "horizontal"
+                id: ap_route_control_container
+                PaddedLabelL:
+                    width: 83
+                    size_hint: (None, 1)
+                    text: "Route"
+                UnicodeButton:
+                    text: "▶ Start"
+                    on_release: app.send_command("route_start")
+                UnicodeButton:
+                    text: "■ Stop"
+                    on_release: app.send_command("route_stop")
+                UnicodeButton:
+                    text: "▷ Res."
+                    on_release: app.send_command("route_resume")
+                UnicodeButton:
+                    text: "▯▯ Susp."
+                    on_release: app.send_command("route_suspend")
+            BoxLayout:
+                orientation: "horizontal"
+                id: ap_lp_control_container
+                PaddedLabelL:
+                    width: 83
+                    size_hint: (None, 1)
+                    text: "Loiter Pos."
+                UnicodeButton:
+                    text: "▶ Start"
+                    on_release: app.send_command("lp_start")
+                UnicodeButton:
+                    text: "■ Stop"
+                    on_release: app.send_command("lp_stop")
+            BoxLayout:
+                orientation: "horizontal"
+                id: ap_lp_control_container
+                PaddedLabelL:
+                    width: 83
+                    size_hint: (None, 1)
+                    text: "Diving"
+                UnicodeButton:
+                    text: "▶ Start"
+                    on_release: app.send_command("dp_start")
+                UnicodeButton:
+                    text: "■ Stop"
+                    on_release: app.send_command("dp_stop")
+            EmergencyStopButton:
+                on_release: app.send_command("emergency_stop")
+            TitleLabel:
+                text: "Activate Procedures"
+            BoxLayout:
+                orientation: "horizontal"
+                id: ap_activation_container
+                BoxLayout:
+                    orientation: "vertical"
+                    TextInput:
+                        id: route_id
+                        text: "1"
+                    Button:
+                        text: "Act. Route"
+                        on_release: app.activate_procedure(route_id.text, "route")
+                BoxLayout:
+                    orientation: "vertical"
+                    TextInput:
+                        id: lp_id
+                        text: "1"
+                    Button:
+                        text: "Act. Loiter Pos."
+                        on_release: app.activate_procedure(lp_id.text, "lp")
+                BoxLayout:
+                    orientation: "vertical"
+                    TextInput:
+                        id: dp_id
+                        text: "1"
+                    Button:
+                        text: "Act. Dive Proc."
+                        on_release: app.activate_procedure(dp_id.text, "dp")
+            TitleLabel:
+                text: "Send Procedures"
+            BoxLayout:
+                orientation: "horizontal"
+                id: ap_mission_zip_send_container
+                PaddedLabelL:
+                    width: 83
+                    size_hint: (None, 1)
+                    text: "Mission ZIP"
+                Button:
+                    text: "Load"
+                    on_release: app.show_load("missionzip")
+                Widget:
+                Button:
+                    text: "Send"
+                    on_release: app.send_procedure("missionzip")
+            BoxLayout:
+                orientation: "horizontal"
+                id: ap_mission_json_send_container
+                PaddedLabelL:
+                    width: 83
+                    size_hint: (None, 1)
+                    text: "Mission"
+                Button:
+                    text: "Load"
+                    on_release: app.show_load("missionjson")
+                Button:
+                    text: "Edit"
+                    on_release: app.show_editor("missionjson")
+                Button:
+                    text: "Send"
+                    on_release: app.send_procedure("missionjson")
+            BoxLayout:
+                orientation: "horizontal"
+                id: ap_route_send_container
+                PaddedLabelL:
+                    width: 83
+                    size_hint: (None, 1)
+                    text: "Route"
+                Button:
+                    text: "Load"
+                    on_release: app.show_load("route")
+                Button:
+                    text: "Edit"
+                    on_release: app.show_editor("route")
+                Button:
+                    text: "Send"
+                    on_release: app.send_procedure("route")
+            BoxLayout:
+                orientation: "horizontal"
+                id: ap_lp_send_container
+                PaddedLabelL:
+                    width: 83
+                    size_hint: (None, 1)
+                    text: "Loiter Pos."
+                Button:
+                    text: "Load"
+                    on_release: app.show_load("lp")
+                Button:
+                    text: "Edit"
+                    on_release: app.show_editor("lp")
+                Button:
+                    text: "Send"
+                    on_release: app.send_procedure("lp")
+            BoxLayout:
+                orientation: "horizontal"
+                id: ap_dp_send_container
+                PaddedLabelL:
+                    width: 83
+                    size_hint: (None, 1)
+                    text: "Dive Proc."
+                Button:
+                    text: "Load"
+                    on_release: app.show_load("dp")
+                Button:
+                    text: "Edit"
+                    on_release: app.show_editor("dp")
+                Button:
+                    text: "Send"
+                    on_release: app.send_procedure("dp")
+
+    TabbedPanelItem:
+        text: "Payloads"
+        BoxLayout:
+            orientation: "vertical"
+            TitleLabel:
+                text: "ROV"
+            BoxLayout:
+                orientation: "horizontal"
+                id: rov_controls
+                PaddedLabelL:
+                    size_hint: (None, 1)
+                    text: "ROV Proc."
+                Button:
+                    text: "Deploy"
+                    on_release: app.rov_deploy_retrieve("deploy")
+                Button:
+                    text: "Retrieve"
+                    on_release: app.rov_deploy_retrieve("retrieve")
+            Video:
+                source: "video-camera.png"
+                id: st_rov_video
+                on_eos: app.rov_video_ended()
+                play: False
+
+<BackgroundColor@Widget>
+    background_color: 1, 1, 1, 1
+    canvas.before:
+        Color:
+            rgba: root.background_color
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+<UnicodeButton@Button>:
+    font_name: "DejaVuSans"
+
+<UnicodeLabel@Label>:
+    font_name: "DejaVuSans"
+
+<TitleLabel@UnicodeLabel+BackgroundColor>:
+    height: 30
+    size_hint: 1, None
+    text_size: self.size
+    halign: "center"
+    valign: "middle"
+    background_color: 0.1, 0.1, 0.1, 1
+
+<PaddedLabel@UnicodeLabel>:
+    text_size: self.size
+    halign: "center"
+    valign: "middle"
+    padding: [10, 0, 10, 0]
+
+<PaddedLabelR@PaddedLabel>:
+    halign: "right"
+
+<PaddedLabelL@PaddedLabel>:
+    halign: "left"
+
+<EmergencyStopButton@UnicodeButton>:
+    background_color: 0.96, 0.0, 0.1, 1
+    background_normal: ""
+    text: "⚠ Emergency Stop"
+
+
+<LoadLpDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            filters: ["*.json"]
+            path: app.last_lp_path
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.cancel()
+
+            Button:
+                text: "Load"
+                on_release: app.load(filechooser.path, filechooser.selection, what="lp")
+
+<LoadDpDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            filters: ["*.json"]
+            path: app.last_dp_path
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.cancel()
+
+            Button:
+                text: "Load"
+                on_release: app.load(filechooser.path, filechooser.selection, what="dp")
+
+<LoadMissionJsonDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            filters: ["*.json"]
+            path: app.last_dp_path
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.cancel()
+
+            Button:
+                text: "Load"
+                on_release: app.load(filechooser.path, filechooser.selection, what="mission_json")
+
+<LoadMissionZipDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            filters: ["*.zip"]
+            path: app.last_dp_path
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.cancel()
+
+            Button:
+                text: "Load"
+                on_release: app.load(filechooser.path, filechooser.selection, what="mission_zip")
+
+
+
+<LoadRouteDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            filters: ["*.gpx"]
+            path: app.last_route_path
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.cancel()
+
+            Button:
+                text: "Load"
+                on_release: app.load(filechooser.path, filechooser.selection, what="route")
+
+<MessageEditor>:
+    textinput: textinput
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        TextInput:
+            id: textinput
+            text: "was"
+            font_name: "RobotoMono-Regular"
+            do_wrap: False
+            
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: app.cancel()
+            Button:
+                text: "Save"
+                on_release: app.editor_save(textinput.text, root.msg_type)

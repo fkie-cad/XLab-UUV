@@ -1,0 +1,11 @@
+---
+- name: Update apt packages, reboot if required and install gui dependencies
+  hosts: bridgecommand
+  become: false
+  tasks:
+    - name: Build BridgeCommand
+      ansible.builtin.shell:
+        chdir: "/home/vagrant/bc/bin"
+        cmd: |
+          cmake ../src
+          make -j $(nproc)

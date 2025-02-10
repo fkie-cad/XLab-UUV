@@ -1,0 +1,5 @@
+.cache/
+compile_commands.json
+src/*TypeSupportImpl.cpp
+src/*TypeSupportImpl.h
+src/*TypeSupport.idl

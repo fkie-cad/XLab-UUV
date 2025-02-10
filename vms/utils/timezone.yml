@@ -1,0 +1,9 @@
+---
+- name: Set timezone
+  hosts: all
+  become: true
+  tasks:
+    - name: Set timezone to Europe/Berlin
+      become: true
+      shell: |
+        timedatectl set-timezone Europe/Berlin

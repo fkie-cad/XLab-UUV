@@ -1,0 +1,26 @@
+---
+- name: Setup OS
+  hosts: all
+
+  become: true
+
+  tasks:
+    - name: Update software packages
+      ansible.builtin.shell:
+        cmd: pkg update
+
+    - name: Upgrade software packages
+      ansible.builtin.shell:
+        cmd: pkg upgrade -y
+
+    - name: Install required tools
+      ansible.builtin.shell:
+        cmd: pkg install -y vim htop tmux wget py311-pip perl5 gmake gcc cmake git wireshark openvpn automake
+
+    - name: Download Boost version 1.83
+      ansible.builtin.shell:
+        cmd: wget https://pkg.freebsd.org/FreeBSD:13:amd64/release_3/All/boost-libs-1.83.0_1.pkg
+
+    - name: Install Boost version 1.83
+      ansible.builtin.shell:
+        cmd: sudo pkg add boost-libs-1.83.0_1.pkg

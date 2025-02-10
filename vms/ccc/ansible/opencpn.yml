@@ -1,0 +1,45 @@
+---
+- name: Install and configure OpenCPN
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install software-properties-common
+      apt:
+        name:
+          - software-properties-common
+          - libcanberra-gtk-module
+          - libcanberra-gtk3-module
+        state: present
+
+    - name: Add OpenCPN PPA repository
+      apt_repository:
+        repo: "ppa:opencpn/opencpn"
+        state: present
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install OpenCPN
+      apt:
+        name: opencpn
+        state: present
+
+    - name: Create OpenCPN config directory
+      become: false
+      file:
+        path: /home/vagrant/.opencpn
+        state: directory
+
+    - name: Remoe old opencpn.conf
+      become: false
+      file:
+        path: /home/vagrant/.opencpn/opencpn.conf
+        state: absent
+
+    - name: Create symlink for opencpn.conf
+      become: false
+      file:
+        src: /home/vagrant/ccc/opencpn/opencpn.conf
+        dest: /home/vagrant/.opencpn/opencpn.conf
+        state: link

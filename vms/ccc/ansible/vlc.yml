@@ -1,0 +1,11 @@
+- name: Install VLC and vlc-plugin-base
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install VLC and vlc-plugin-base
+      apt:
+        name:
+          - vlc
+          - vlc-plugin-base
+        state: present
+

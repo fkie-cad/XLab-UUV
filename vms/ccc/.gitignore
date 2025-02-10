@@ -1,0 +1,17 @@
+# poetry
+poetry.lock
+dist
+
+# protoc
+*_pb2*
+
+# python
+venv/
+**/__pycache__/
+*.py[cod]
+
+# examples
+*.zip
+
+# environment file with token
+.env

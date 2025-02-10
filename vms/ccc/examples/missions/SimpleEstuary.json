@@ -1,0 +1,192 @@
+{
+  "procedures": {
+    "routes": [
+      {
+        "id": 101,
+        "path": "./routes/SimpleEstuary_01.gpx"
+      },
+      {
+        "id": 102,
+        "path": "./routes/SimpleEstuary_02.gpx"
+      },
+      {
+        "id": 105,
+        "path": "./routes/SimpleEstuary_05.gpx"
+      },
+      {
+        "id": 108,
+        "path": "./routes/SimpleEstuary_08.gpx"
+      },
+      {
+        "id": 109,
+        "path": "./routes/SimpleEstuary_09.gpx"
+      }
+    ],
+    "dive_procedures": [
+      {
+        "id": 104,
+        "path": "./dive_procedures/SimpleEstuary_04.json"
+      },
+      {
+        "id": 107,
+        "path": "./dive_procedures/SimpleEstuary_07.json"
+      },
+      {
+        "id": 111,
+        "path": "./dive_procedures/surface.json"
+      }
+    ],
+    "loiter_positions": [
+      {
+        "id": 103,
+        "path": "./loiter_positions/SimpleEstuary_03.json"
+      },
+      {
+        "id": 106,
+        "path": "./loiter_positions/SimpleEstuary_06.json"
+      },
+      {
+        "id": 110,
+        "path": "./loiter_positions/SimpleEstuary_10.json"
+      }
+    ]
+  },
+  "mission": {
+    "id": 1,
+    "name": "Simple Estuary",
+    "items": [
+      {
+        "until_completion": false,
+        "activate_diveproc": 111
+      },
+      {
+        "until_completion": false,
+        "set_ap_cmd": "AC_DIVE_START"
+      },
+      {
+        "until_completion": true,
+        "activate_route": 101
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_route": 102
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_loiterpos": 103
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_STOP"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_diveproc": 104
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_DIVE_START"
+      },
+      {
+        "until_completion": true,
+        "activate_route": 105
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_loiterpos": 106
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_STOP"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_diveproc": 107
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_DIVE_START"
+      },
+      {
+        "until_completion": true,
+        "activate_route": 108
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_route": 109
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      },
+      {
+        "until_completion": true,
+        "activate_loiterpos": 110
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_START"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_LOITER_STOP"
+      },
+      {
+        "until_completion": true,
+        "set_ap_cmd": "AC_ROUTE_STOP"
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+--- install.sh	2024-11-18 15:13:09.565413055 +0100
++++ a	2024-11-18 15:14:21.497412147 +0100
+@@ -242,7 +242,7 @@
+     fi
+     # was: git clone git://openflowswitch.org/openflow.git
+     # Use our own fork on github for now:
+-    git clone https://github.com/mininet/openflow
++    #git clone https://github.com/mininet/openflow
+     cd $BUILD_DIR/openflow
+ 
+     # Patch controller to handle more than 16 switches
+

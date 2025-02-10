@@ -1,0 +1,73 @@
+---
+- name: Resize disk size of /dev/sda3
+  hosts: all
+  become: true
+  vars:
+    sda3_holder: "{{ ansible_facts.devices.sda.partitions.sda3.holders[0] | default('NONE', true) }}"
+    sda3_size: "{{ ansible_facts.devices.sda.partitions.sda3.size | human_to_bytes }}"
+
+  tasks:
+    - name: Check if reboot required
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+
+    - name: Reboot if required
+      ansible.builtin.reboot:
+      when: reboot_required_file.stat.exists == true
+
+    - name: Resize sda3 partition
+      block:
+        - name: Rewrite the GPT backup-header at the end of the disk
+          shell: printf "fix\n" | parted ---pretend-input-tty /dev/sda print
+          changed_when: true
+          args:
+            executable: /bin/bash
+
+        - name: Resize sda3 partition
+          shell: parted --script /dev/sda resizepart 3 100%
+          changed_when: true
+          when:
+          args:
+            executable: /bin/bash
+
+        - name: Resize physical volume
+          shell: pvresize /dev/sda3
+          changed_when: true
+          args:
+            executable: /bin/bash
+
+        - name: Extend logical volume
+          shell: lvextend -l+100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+          register: cmd_result
+          changed_when: true
+          args:
+            executable: /bin/bash
+          failed_when: cmd_result.rc != 5 and cmd_result.rc != 0
+
+        - name: Resize filesystem
+          shell: resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+          changed_when: true
+          args:
+            executable: /bin/bash
+
+        - name: Check partition list
+          shell: fdisk -l
+          changed_when: true
+          register: out
+          args:
+            executable: /bin/bash
+
+        - debug: var=out.stdout_lines
+
+        - name: Check filesystem
+          shell: df -lhT
+          changed_when: true
+          register: out
+          args:
+            executable: /bin/bash
+
+        - debug: var=out.stdout_lines
+      when:
+        - sda3_holder == "ubuntu--vg-ubuntu--lv"
+        - sda3_size|int < 19327352832

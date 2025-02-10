@@ -1,0 +1,51 @@
+---
+- name: Download and install OpenDDS
+  hosts: all
+  become: true
+  vars:
+    opendds_dir: /opt/opendds
+    opendds_archive_url: "https://github.com/OpenDDS/OpenDDS/releases/download/DDS-3.24.1/OpenDDS-3.24.1.tar.gz"
+    acetao_archive_url: "https://downloads.opendds.org/TAO-2.2a/ACE+TAO-2.2a_with_latest_patches_NO_makefiles.tar.gz"
+  tasks:
+    - name: Create OpenDDS directory
+      file:
+        path: "{{ opendds_dir }}"
+        state: directory
+
+    - name: Download OpenDDS archive
+      get_url:
+        url: "{{ opendds_archive_url }}"
+        dest: "{{ opendds_dir }}/OpenDDS-3.24.1.tar.gz"
+
+    - name: Unpack OpenDDS archive
+      shell: tar -xzf "{{ opendds_dir }}/OpenDDS-3.24.1.tar.gz" -C "{{ opendds_dir }}"
+
+    - name: Remove OpenDDS arcive
+      shell: rm -f "{{ opendds_dir }}/OpenDDS-3.24.1.tar.gz"
+
+    - name: Download ACE/TAO archive
+      get_url:
+        url: "{{ acetao_archive_url }}"
+        dest: "{{ opendds_dir }}/ACE+TAO-2.2a_with_latest_patches_NO_makefiles.tar.gz"
+
+    - name: Unpack ACE/TAO archive
+      shell: tar -xzf "{{ opendds_dir }}/ACE+TAO-2.2a_with_latest_patches_NO_makefiles.tar.gz" -C "{{ opendds_dir }}/OpenDDS-3.24.1"
+
+    - name: Remove ACE/TAO arcive
+      shell: rm -f "{{ opendds_dir }}/ACE+TAO-2.2a_with_latest_patches_NO_makefiles.tar.gz"
+
+    - name: Apply freebsd patches 1/2
+      shell: cp "/home/vagrant/support/os_sched.h" "{{opendds_dir}}/OpenDDS-3.24.1/ACE_wrappers/ace/os_include/os_sched.h"
+
+    - name: Apply freebsd patches 2/2
+      shell: cp "/home/vagrant/support/platform_freebsd.GNU" "{{opendds_dir}}/OpenDDS-3.24.1/ACE_wrappers/include/makeinclude/platform_freebsd.GNU"
+
+    - name: Configure OpenDDS
+      shell: perl ./configure
+      args:
+        chdir: "{{ opendds_dir }}/OpenDDS-3.24.1"
+
+    - name: Build OpenDDS
+      shell: gmake -j 4
+      args:
+        chdir: "{{ opendds_dir }}/OpenDDS-3.24.1"

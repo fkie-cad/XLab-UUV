@@ -1,0 +1,53 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "ot" do |ot|
+    ot.vm.box = "generic/freebsd13"
+    ot.vm.box_version = "4.3.12"
+    ot.vm.graceful_halt_timeout = 20
+
+    ot.vm.hostname = "OT"
+    ot.vm.network "forwarded_port", id: "ssh", guest: 22, host: 2004, auto_correct: true
+    ot.vm.network "private_network", ip: "192.168.1.2", virtualbox__intnet: true, name: "xluuvvpn" # VPN
+    ot.vm.network "private_network", ip: "192.178.1.1", virtualbox__intnet: true, name: "extnet1" # towards bc
+
+    ot.vm.synced_folder '.', '/vagrant', disabled: true
+    ot.vm.synced_folder "./support", "/home/vagrant/support/", type: "rsync", rsync__args: ["--verbose", "--archive", "-z", "--copy-links"]
+    ot.vm.synced_folder "../utils/dds/", "/opt/src/dds", type: "rsync", rsync__exclude: [".git/", "**/bin/*"]
+    ot.vm.synced_folder "../utils/vpn/", "/home/vagrant/vpn", type: "rsync"
+
+    ot.vm.post_up_message = <<-MESSAGE
+Access VM:
+`ssh -p 2004 -i ./.vagrant/machines/ot/virtualbox/private_key vagrant@localhost`
+MESSAGE
+    end
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "OT"
+    vb.memory = "2048"
+    vb.cpus = 1
+  end
+
+  if ARGV[0] == "up" && (ARGV[1] == "--provision" || ARGV[1] == "--provision-with")
+    config.vm.provider "virtualbox" do |vb|
+      vb.name = "OT"
+      vb.memory = "4096"
+      vb.cpus = 4
+    end
+  end
+
+  config.vm.provision "Setup OS", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/setup-os.yml"
+  end
+
+  config.vm.provision "opendds", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/opendds.yml"
+  end
+
+  config.vm.provision "dds", type: "ansible" do |ansible|
+    ansible.playbook = "ansible/dds.yml"
+  end
+
+end

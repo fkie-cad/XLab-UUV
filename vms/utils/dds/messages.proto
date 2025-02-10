@@ -1,0 +1,415 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+// current state of the AP Controller
+// WARNING: ccc-proxy relies on this enum matching the
+//          AutopilotState enum in dds/Autopilot.idl 1:1, the
+//          number of values and the order of values must be the same!
+enum AutopilotState {
+  AS_UNKNOWN = 0;
+  AS_DISABLED = 1;
+  AS_ROUTE_ENABLED = 2;
+  AS_ROUTE_SUSPENDED = 3;
+  AS_LOITERING = 4;
+  AS_EMERGENCY_STOP = 5;
+  AS_DIVING = 6;
+}
+
+// current state of the mission controller
+// WARNING: ccc-proxy relies on this enum matching the
+//          MissionStatus enum in dds/Autopilot.idl 1:1, the
+//          number of values and the order of values must be the same!
+enum MissionStatus {
+  MS_UNKNOWN = 0;
+  MS_ENABLED = 1;
+  MS_DISABLED = 2;
+  MS_SUSPENDED = 3;
+}
+
+// commands to the AP controller
+// WARNING: ccc-proxy relies on this enum matching the
+//          AutopilotCommandType enum in dds/Autopilot.idl 1:1, the
+//          number of values and the order of values must be the same!
+enum AutopilotCommand {
+  AC_ROUTE_START = 0;
+  AC_ROUTE_STOP = 1;
+  AC_ROUTE_SUSPEND = 2;
+  AC_ROUTE_RESUME = 3;
+  AC_LOITER_START = 4;
+  AC_LOITER_STOP = 5;
+  AC_EMERGENCY_STOP = 6;
+  AC_DIVE_START = 7;
+  AC_DIVE_STOP = 8;
+}
+
+// commands to the mission controller
+// WARNING: ccc-proxy relies on this enum matching the
+//          MissionCommandType enum in dds/Autopilot.idl 1:1, the
+//          number of values and the order of values must be the same!
+enum MissionCommand {
+  MC_START = 0;
+  MC_STOP = 1;
+  MC_SUSPEND = 2;
+  MC_RESUME = 3;
+  MC_SKIP_STEP = 4;
+}
+
+
+// Active COLREG situation, CR_INACTIVE indicates no active collision avoidance
+// WARNING: ccc-proxy relies on this enum matching the
+//          ColregType enum in dds/Autopilot.idl 1:1, the
+//          number of values and the order of values must be the same!
+enum ColregType {
+  CR_INACTIVE = 0;
+  CR_OVERTAKING = 1;
+  CR_OVERTAKEN = 2;
+  CR_HEAD_TO_HEAD = 3;
+  CR_CROSSING = 4;
+}
+
+// success/error message for RouteXML payload
+enum RouteXMLError {
+  RXE_NO_ERROR = 0;
+  RXE_INVALID_XML = 1;
+  RXE_MISSING_FIELD = 2;
+  RXE_INVALID_CMD = 3;
+}
+
+// success/error message for JSON payloads
+enum JsonError {
+  JE_NO_ERROR = 0;
+  JE_PARSE_ERROR = 1;
+}
+
+enum MissionZipError {
+  MZE_NO_ERROR = 0;
+  MZE_ZIP_ERROR = 1;
+  MZE_MISSING_ROUTE = 2;
+  MZE_MISSING_LP = 3;
+  MZE_MISSING_DP = 4;
+  MZE_MISSING_MISSION = 5;
+  MZE_JSON_ERROR = 6;
+  MZE_KEY_ERROR = 7;
+  MZE_XML_ERROR = 8;
+}
+
+// message encapsulating RouteXMLError
+message RouteXMLErrorMessage {
+  RouteXMLError error = 1;
+}
+
+message JsonErrorMessage {
+  JsonError error = 1;
+}
+
+message MissionZipErrorMessage {
+  MissionZipError error = 1;
+}
+
+// XLUUV status as aggregated and reported by CCCServer
+message AggregatedXluuvStatus {
+  // timestamp of last XLUUV report
+  google.protobuf.Timestamp last_ping = 1;
+  // AP related values
+  AutopilotState ap_state = 2;
+  Waypoint ap_active_waypoint = 3;
+  double ccc_estimated_wpt_dist = 4;
+  int64 ap_active_route = 5;
+  int64 ap_route_progress = 6;
+  int64 ap_route_len = 7;
+  string ap_route_name = 8;
+  int64 active_lp_id = 9;
+  double lp_dist = 10;
+  string lp_name = 11;
+  string dp_name = 12;
+  double ccc_estimated_dp_dist = 13;
+  double tgt_depth = 14;
+  double tgt_speed = 15;
+  Coordinates gnss_ap = 16;
+  // Mission status
+  string ms_name = 17;
+  MissionStatus ms_status = 18;
+  int64 ms_len = 19;
+  int64 ms_progress = 20;
+  // sensor values
+  Coordinates sensor_gnss_1 = 21;
+  Coordinates sensor_gnss_2 = 22;
+  Coordinates sensor_gnss_3 = 23;
+  double sensor_cog = 24;
+  double sensor_heading = 25;
+  double sensor_rot = 26;
+  double sensor_rpm_port = 27;
+  double sensor_rpm_stbd = 28;
+  double sensor_rudder_angle = 29;
+  double sensor_sog = 30;
+  double sensor_speed = 31;
+  double sensor_throttle_port = 32;
+  double sensor_throttle_stbd = 33;
+  double sensor_depth_under_keel = 34;
+  double sensor_ship_depth = 35;
+  double sensor_buoyancy = 36;
+  // actuator commands
+  double act_rudder_angle = 37;
+  double act_engine_throttle_port = 38;
+  double act_engine_throttle_stbd = 39;
+  double act_thruster_throttle_bow = 40;
+  double act_thruster_throttle_stern = 41;
+  double act_ballast_tank_pump = 42;
+  // COLREG info
+  ColregType colreg_status = 43;
+  int64 colreg_mmsi = 44;
+}
+
+message MissionReport {
+  string name = 1;
+  MissionStatus status = 2;
+  int64 length = 3;
+  int64 progress = 4;
+}
+
+// sensor values as reported by XLUUV
+message SensorReport {
+  Coordinates gnss_1 = 1;
+  Coordinates gnss_2 = 2;
+  Coordinates gnss_3 = 3;
+  double cog = 4;
+  double heading = 5;
+  double rot = 6;
+  double rpm_port = 7;
+  double rpm_stbd = 8;
+  double rudder_angle = 9;
+  double sog = 10;
+  double speed = 11;
+  double throttle_port = 12;
+  double throttle_stbd = 13;
+  double depth_under_keel = 14;
+  double ship_depth = 15;
+  double buoyancy = 16;
+}
+
+// actuator commands as reported by XLUUV
+message ActuatorCmdReport {
+  double rudder_angle = 1;
+  double engine_throttle_port = 2;
+  double engine_throttle_stbd = 3;
+  double thruster_throttle_bow = 4;
+  double thruster_throttle_stern = 5;
+  double ballast_tank_pump = 6;
+}
+
+// AP state as reported by XLUUV
+message APReport {
+  AutopilotState state = 1;
+  Waypoint active_waypoint = 2;
+  int64 active_route_id = 3;
+  int64 route_progress = 4;
+  int64 route_len = 5;
+  string route_name = 6;
+  int64 active_lp_id = 7;
+  double lp_dist = 8;
+  string lp_name = 9;
+  double tgt_speed = 10;
+  string dp_name = 11;
+  double tgt_depth = 12;
+  Coordinates gnss_ap = 13;
+}
+
+message ColregStatus {
+  ColregType type = 1;
+  int64 tgt_mmsi = 2;
+  Coordinates tgt_pos = 3;
+}
+
+message TelemetryReport {
+  oneof report {
+    SensorReport sensor_report = 1;
+    ActuatorCmdReport act_cmd_report = 2;
+    APReport ap_report = 3;
+    MissionReport mission_report = 4;
+    WrappedNmea nmea_report = 5;
+    ColregStatus colreg_report = 6;
+  }
+}
+
+message ApCommand {
+  AutopilotCommand command = 1; 
+}
+
+message MsCommand {
+  MissionCommand command = 1;
+}
+
+message Coordinates {
+  double latitude = 1;
+  double longitude = 2;
+}
+
+message Waypoint {
+  Coordinates coords = 1;
+  string name = 2;
+}
+
+message LoiterPosition {
+  int64 id = 1;
+  Waypoint position = 2;
+  double bearing = 3;
+}
+
+message LoiterPositionJson {
+  string lp_json = 1;
+}
+
+message ApRoute {
+  int64 id = 1;
+  repeated Waypoint waypoints = 2;
+  string name = 4;
+  double planned_speed = 5;
+}
+
+message ApRouteXML {
+  int64 id = 1;
+  string route_xml = 2;
+}
+
+message DiveProcedure {
+  int64 id = 1;
+  string name = 2;
+  float depth = 3;
+}
+
+message DiveProcedureJson {
+  string dp_json = 1;
+}
+
+// route identifier encapsulation
+message RouteId {
+  int64 id = 1;
+}
+
+// loiter position identifier encapsulation
+message LoiterPositionId {
+  int64 id = 1;
+}
+
+// dive procedure identifier encapsulation
+message DiveProcedureId {
+  int64 id = 1;
+}
+
+// mission specification as transmitted to XLUUV
+message ApMission {
+  message ApMissionItem {
+    oneof duration {
+      bool until_completion = 1;
+      int64 until_timeout = 2;
+    }
+    oneof command {
+      int64 act_route_id = 3;
+      int64 act_loiterpos_id = 4;
+      int64 act_diveproc_id = 5;
+      AutopilotCommand set_ap_cmd = 6;
+    }
+  }
+  int64 id = 1;
+  string name = 2;
+  repeated ApMissionItem ap_mission_items = 3;
+}
+
+// mission as transmitted to CCC-server from a client, e.g. read from disk:
+message ApMissionJson {
+  string mission_json = 1;
+}
+
+// mission as transmitted to CCC-server from a client, containing the 
+// required mission elements such as routes, dive procs and loiter positions
+// in their respective formats
+message ApMissionZip {
+  bytes mission_zip = 1;
+}
+
+// XLUUV-internal NMEA message forwarded to CCC, e.g. AIS
+message WrappedNmea {
+  string msg = 1;
+}
+
+service CCCServer {
+  // receives a mission zip, with mission json, lp, route and diveproc
+  // jsons for all mission steps. CCCServer then builds the required
+  // SendRoute, SendLoiterPosition etc calls to XLUUV
+  rpc SendMissionZip (ApMissionZip) returns (MissionZipErrorMessage) {}
+
+  // receives a mission json from a client, crafts the corresponding
+  // Mission request to send to XLUUV
+  rpc SendMissionJson (ApMissionJson) returns (JsonErrorMessage) {}
+
+  // receives a LP json from a client, crafts the corresponding
+  // LoiterPosition request to send to XLUUV
+  rpc SendLoiterPositionJson (LoiterPositionJson) returns (JsonErrorMessage) {}
+
+  // receives a DP json from a client, crafts the corresponding
+  // DiveProcedure request to send to XLUUV
+  rpc SendDiveProcedureJson (DiveProcedureJson) returns (JsonErrorMessage) {}
+
+  // receives route XML from a client, crafts the corresponding
+  // Route request to send to XLUUV
+  rpc SendRouteXml (ApRouteXML) returns (RouteXMLErrorMessage) {}
+
+  // get an aggregate of XLUUV state, including sensor reports and AP state
+  rpc GetXluuvStatus (google.protobuf.Empty) returns (AggregatedXluuvStatus) {}
+
+  // receives an AP Command from a client and proxies it to XLUUV
+  rpc SendApCommand (ApCommand) returns (google.protobuf.Empty) {}
+
+  // receives a mission Command from a client and proxies it to XLUUV
+  rpc SendMissionCommand (MsCommand) returns (google.protobuf.Empty) {}
+
+  // set the route matching the provided ID as active
+  // this route will then be used in route following state of the autopilot
+  rpc ActivateRoute (RouteId) returns (google.protobuf.Empty) {}
+
+  // set the loiter position matching the provided ID as active
+  // this loiter position will then be used in route following state of the autopilot
+  rpc ActivateLoiterPosition (LoiterPositionId) returns (google.protobuf.Empty) {}
+
+  // set the dive procedure matching the provided ID as active
+  // this dive procedure will then be used in route following state of the autopilot
+  rpc ActivateDiveProcedure (DiveProcedureId) returns (google.protobuf.Empty) {}
+}
+
+service XLUUV {
+  // transmit a mission description to XLUUV
+  // the mission manager can only store a single mission, which is 
+  // overwritten by any subsequent SendMission calls
+  rpc SendMission (ApMission) returns (google.protobuf.Empty) {}
+
+  // send a loiter position description
+  // if a LP with teh given ID already exists, it is overwritten, acting as an update
+  rpc SendLoiterPosition (LoiterPosition) returns (google.protobuf.Empty) {}
+
+  // send a route description
+  // if a route with the given ID already exists, it is overwritten, acting as an update
+  rpc SendRoute (ApRoute) returns (google.protobuf.Empty) {}
+
+  // send a dive procedure description
+  // if a dive procedure with the given ID already exists, it is overwritten, acting as an update
+  rpc SendDiveProcedure (DiveProcedure) returns (google.protobuf.Empty) {}
+
+  // execute the provided mission command, changing the mission state
+  rpc SendMissionCommand (MsCommand) returns (google.protobuf.Empty) {}
+
+  // execute the provided ap command, changing the AP state
+  rpc SendApCommand (ApCommand) returns (google.protobuf.Empty) {}
+
+  // set the route matching the provided ID as active
+  // this route will then be used in route following state of the autopilot
+  rpc ActivateRoute (RouteId) returns (google.protobuf.Empty) {}
+
+  // set the loiter position matching the provided ID as active
+  // this loiter position will then be used in route following state of the autopilot
+  rpc ActivateLoiterPosition (LoiterPositionId) returns (google.protobuf.Empty) {}
+
+  // set the dive procedure matching the provided ID as active
+  // this dive procedure will then be used in route following state of the autopilot
+  rpc ActivateDiveProcedure (DiveProcedureId) returns (google.protobuf.Empty) {}
+}
